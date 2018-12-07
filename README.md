@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Project: Build a Traffic Sign Recognition Program
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
@@ -57,6 +56,4 @@ Follow the instructions in the `Traffic_Sign_Classifier.ipynb` notebook and writ
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
-=======
-# traffic_sign_classifier
->>>>>>> 9b10523aa6c5de7d325cc1237dcec7defe45844e
+
