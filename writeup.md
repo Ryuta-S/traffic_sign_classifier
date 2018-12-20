@@ -80,26 +80,32 @@ Here is an example of an original image and an augmented image:
 TensorFlowの計算グラフを以下に示します。
 My final model consisted of the following layers:
 
-| 分岐1 								| Description										| Main Layer  			| Description							 | 分岐2 					| Description        |
-|:---------------------:|:-----------------------------:|:-----------------:|:------------------------:|:--------------:|:-----------------:| 
-| Layer         		|     Description	        					|
-|:---------------------:|:---------------------------------------------:|
-| Input         		    | 32x32x3 RGB image                							|
-| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x20 	|
-| RELU                  | activation                                    |
-| Batch Normalization   |                                               |
-| Convolution 3x3       | 1x1 stride, valid padding, outputs 30x30x20   |
-| RELU                  | activation                                    |
-| Batch Normalization   |                                               |
-| Convolution 3x3       |
-| Merge				        	|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
-
+| branch1          | Description              | Main Layer       | Description              | breanch2        | Description            |
+|:----------------:|:------------------------:|:----------------:|:------------------------:|:---------------:|:----------------------:| 
+|                  |                          | Input            | 32x32x3 RGB image				|                 |                        |
+| layer1: Inception1(Conv5x5)| 1x1 stride, valid, out:28x28x10|  |                          | layer1: Inception2_1(Conv3x3)| 1x1 stride, valid, out:30x30x10 |
+| layer1: RELU     | activation               |                  |                  				| layer1: RELU    | activation             |
+| layer1: BN       | Batch Normalization      |                  |                  				| layer1: Inception2_2(Conv3x3)| 1x1 stride, valid, out:30x30x20 |
+|         ↓        |             ↓            |                  |                  				| layer1: RELU    | activation             |
+|         ↓        |             ↓            |                  |                  				| layer1: BN      | Batch Normalization    |
+|                  |                          | layer1: Merge    | Merge inception1 and inception2, out: 28x28x30 |             |      |
+| layer2: Inception1(Conv5x5)| 2x2 stride, same, out:14x14x50|   |                  				| layer2: Inception2(Conv3x3)| 2x2 stride, same, out:14x14x50  |
+| layer2: RELU     | activation               |                  |                          | layer2: RELU    | activation             |
+| layer2: BN       | Batch Normalization      |                  |                          | layer2: BN      | Batch Normalization    | 
+|                  |                          | layer2: Merge    | Merge inception1 and inception2, out: 14x14x100|             |      |
+| layer3: Inception1(Conv5x5)| 1x1 stride, valid, out:10x10x120| |                          | layer3: Inception2_1(Conv3x3)| 1x1 stride, valid, out:12x12x100|
+| layer3: RELU     | activation               |                  |                          | layer3: RELU    | activation             |
+| layer3: BN       | Batch Normalization      |                  |                          | layer3: Inception2_2(Conv3x3)| 1x1 stride, valid, out:12x12x120|
+|                  |                          |                  |                          | layer3: RELU    | activation             |
+|                  |                          |                  |                          | layer3: BN      | Batch Normalization    |
+|                  |                          | layer3: Merge    | Merge inception1 and inception2, out: 12x12x240|            |       |
+|                  |                          | GAP              | Global Average Pooling out:240 |           |                        |
+|                  |                          | layer4: Fully Connected  | input: 240, output: 150|           |                        |
+|                  |                          | dropout          | dropout keep_prob: 0.75 or 0.5 |           |                        |
+|                  |                          | layer5: Fully Connected  | input: 150, output: 100|           |                        |
+|                  |                          | dropout          | dropout keep_prob: 0.75 or 0.5 |           |                        |
+|                  |                          | output           | input: 100, output: 43         |           |                        |
+|                  |                          | Softmax          | input: 43, output: 43          |           |                        |
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
