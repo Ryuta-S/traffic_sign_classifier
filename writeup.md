@@ -96,8 +96,8 @@ My final model consisted of the following layers:
 | layer3: Inception1(Conv5x5)| 1x1 stride, valid, out:10x10x120| |                          | layer3: Inception2_1(Conv3x3)| 1x1 stride, valid, out:12x12x100|
 | layer3: RELU     | activation               |                  |                          | layer3: RELU    | activation             |
 | layer3: BN       | Batch Normalization      |                  |                          | layer3: Inception2_2(Conv3x3)| 1x1 stride, valid, out:12x12x120|
-|                  |                          |                  |                          | layer3: RELU    | activation             |
-|                  |                          |                  |                          | layer3: BN      | Batch Normalization    |
+|         ↓        |             ↓            |                  |                          | layer3: RELU    | activation             |
+|         ↓        |             ↓            |                  |                          | layer3: BN      | Batch Normalization    |
 |                  |                          | layer3: Merge    | Merge inception1 and inception2, out: 12x12x240|            |       |
 |                  |                          | GAP              | Global Average Pooling out:240 |           |                        |
 |                  |                          | layer4: Fully Connected  | input: 240, output: 150|           |                        |
