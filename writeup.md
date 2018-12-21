@@ -133,20 +133,20 @@ My final model results were:
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
 * 最初に、LeNetの出力層のノード数を代えてトレーニングを行いました。
-* その時、検証用データ、学習用データに対する正解率がとても低かった。なので、アンダーフィッティングしていると考え、3x3の畳み込み層と5x5の畳み込み層をもったインセプションモジュールとバッチノーマライザーしょんを用いました。
+* その時、検証用データ、学習用データに対する正解率がとても低かった。なので、アンダーフィッティングしていると考え、3x3の畳み込み層と5x5の畳み込み層をもったインセプションモジュールを用いました。
 * インセプションモジュールとBNを用いると、検証用データに対しての93%の正解率を達成しました。
 * その後、GoogLeNetに基づいてGlobal Average Poolingを使いました。これで学習を行ったところ96%を達成することができました。
 * 最初は、オプティマイザーにAdaGradを使っていましたが一定のところで正解率が下がることがあったため、GradientDecentに変更しました。
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+* 最後の3つの全結合層にはドロップアウトを入れて、アンサンブル学習を行いました。
+* インセプションモジュールの中にバッチノーマライズを用いて、内部共変量シフトをなくすことを行いました。
+* インセプションモジュールによる特徴量の取り方の違いをいかに示します。
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
-
+<img src='./writeup_image/visualization_inception1_l1.jpg' width=200 />
+<img src='./writeup_image/visualization_inception2_l1.jpg' width=200/>
+<img src='./writeup_image/visualization_inception1_l2.jpg' width=200/>
+<img src='./writeup_image/visualization_inception2_l2.jpg' width=200/>
+<img src='./writeup_image/visualization_inception1_l3.jpg' width=200/>
+<img src='./writeup_image/visualization_inception2_l3.jpg' width=200/>
 
 ### Test a Model on New Images
 
