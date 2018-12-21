@@ -60,14 +60,15 @@ Here is a diagram visualizing the dataset. This is a histogram. It shows how man
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
 As a first step, I decided to convert the images to grayscale because ...
-画像を見てみると暗くて、標識が判別できない画像が多くあったため、輝度のヒストグラムを一定するように変換しました。これは、train, valid, testデータセットそれぞれ全部に行いました。これが私が行った正規化です。
-以下に、オリジナルの画像と変換後の画像を示します。
+As a first step, I decided to convert the images to equalize the histogram of lightness because there are many dark images.
+I did this for every train, validation, test dataset. This is the normalization I did.
+The following shows the original image and the converted image.
 
 <img src='./writeup_image/equalizeLightness.jpg' />
 
 I decided to generate additional data because
-私はデータを拡張することを決めました。理由としては、上記で述べたようにクラスごとに画像の枚数にばらつきがあるからです。このばらつきをなくすため、クラスの中にデータ数が900枚以下の場合に、そのクラスの画像の枚数を増やすことを行いました。増やし方としては、回転と拡大と縮小を行ってデータを増やしました。
-
+I decided to generate additional data because there are variations in the number of images for each class. In order to eliminate this variation, I increased the number of images of that class when the number of data is less than 900 in class.
+I increased the data by rotating, expanding and shrinking.
 
 Here is an example of an original image and an augmented image:
 
@@ -76,8 +77,8 @@ Here is an example of an original image and an augmented image:
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-私のモデルは、インセプションモジュールを導入しました。また、インセプションの後にグローバルアベレージプーリングを行います。そして、全結合層を3層入れました。また、途中にはバッチノーマライゼーションも入れました。
-
+My model introduced the Inception Module. In addition, my model includes global average pooling after the Inception Module. 
+And I put 3 fully connected layers. Also, batch normalization is included in the middle.
 My final model consisted of the following layers:
 
 | branch1          | Description              | Main Layer       | Description              | breanch2        | Description            |
@@ -107,12 +108,13 @@ My final model consisted of the following layers:
 |                  |                          | output           | input: 100, output: 43         |           |                        |
 |                  |                          | Softmax          | input: 43, output: 43          |           |                        |
 
-テンソルボードで作成した計算グラフを[ここ](https://github.com/ryutaShitomi/traffic_sign_classifier/blob/master/writeup_image/model.png)に示します。
+The graph created with the tensorboard is shown [here](https://github.com/ryutaShitomi/traffic_sign_classifier/blob/master/writeup_image/model.png).
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-モデルを学習するために、私は確率的勾配降下法を行いました。拡張した学習用データ数が53037枚だったので、その公倍数となるようにバッチサイズを選びました。epochsは20としました。以下にハイパーパラメータの値を示します。
+To train the my model, I did a stochastic gradient descent method. Since the number of augmentation train data is 53037, I chose the batch size to be the common multiple.And, epochs is 20.
+The hyper parameter values are shown below.
 
 * When the accuracy for training data is 94% or less<br>
   learning rate: 0.1<br>
