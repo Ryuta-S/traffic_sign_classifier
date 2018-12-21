@@ -63,7 +63,7 @@ As a first step, I decided to convert the images to grayscale because ...
 画像を見てみると暗くて、標識が判別できない画像が多くあったため、輝度のヒストグラムを一定するように変換しました。これは、train, valid, testデータセットそれぞれ全部に行いました。これが私が行った正規化です。
 以下に、オリジナルの画像と変換後の画像を示します。
 
-![alt text][image2]
+<img src='./writeup_image/equalizeLightness.jpg' />
 
 I decided to generate additional data because
 私はデータを拡張することを決めました。理由としては、上記で述べたようにクラスごとに画像の枚数にばらつきがあるからです。このばらつきをなくすため、クラスの中にデータ数が900枚以下の場合に、そのクラスの画像の枚数を増やすことを行いました。増やし方としては、回転と拡大と縮小を行ってデータを増やしました。
@@ -71,17 +71,17 @@ I decided to generate additional data because
 
 Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+<img src='./writeup_image/data_augmentation.jpg' />
 
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 私のモデルは、インセプションモジュールを導入しました。また、インセプションの後にグローバルアベレージプーリングを行います。そして、全結合層を3層入れました。また、途中にはバッチノーマライゼーションも入れました。
-TensorFlowの計算グラフを以下に示します。
+
 My final model consisted of the following layers:
 
 | branch1          | Description              | Main Layer       | Description              | breanch2        | Description            |
-|:----------------:|:------------------------:|:----------------:|:------------------------:|:---------------:|:----------------------:| 
+|:----------------:|:------------------------:|:----------------:|:------------------------:|:---------------:|:----------------------:|
 |                  |                          | Input            | 32x32x3 RGB image				|                 |                        |
 | layer1: Inception1(Conv5x5)| 1x1 stride, valid, out:28x28x10|  |                          | layer1: Inception2_1(Conv3x3)| 1x1 stride, valid, out:30x30x10 |
 | layer1: RELU     | activation               |                  |                  				| layer1: RELU    | activation             |
@@ -91,7 +91,7 @@ My final model consisted of the following layers:
 |                  |                          | layer1: Merge    | Merge inception1 and inception2, out: 28x28x30 |             |      |
 | layer2: Inception1(Conv5x5)| 2x2 stride, same, out:14x14x50|   |                  				| layer2: Inception2(Conv3x3)| 2x2 stride, same, out:14x14x50  |
 | layer2: RELU     | activation               |                  |                          | layer2: RELU    | activation             |
-| layer2: BN       | Batch Normalization      |                  |                          | layer2: BN      | Batch Normalization    | 
+| layer2: BN       | Batch Normalization      |                  |                          | layer2: BN      | Batch Normalization    |
 |                  |                          | layer2: Merge    | Merge inception1 and inception2, out: 14x14x100|             |      |
 | layer3: Inception1(Conv5x5)| 1x1 stride, valid, out:10x10x120| |                          | layer3: Inception2_1(Conv3x3)| 1x1 stride, valid, out:12x12x100|
 | layer3: RELU     | activation               |                  |                          | layer3: RELU    | activation             |
@@ -107,20 +107,36 @@ My final model consisted of the following layers:
 |                  |                          | output           | input: 100, output: 43         |           |                        |
 |                  |                          | Softmax          | input: 43, output: 43          |           |                        |
 
+テンソルボードで作成した計算グラフを[ここ](https://github.com/ryutaShitomi/traffic_sign_classifier/blob/master/writeup_image/model.png)に示します。
+
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+モデルを学習するために、私は確率的勾配降下法を行いました。拡張した学習用データ数が53037枚だったので、その公倍数となるようにバッチサイズを選びました。epochsは20としました。以下にハイパーパラメータの値を示します。
+
+* When the accuracy for training data is 94% or less<br>
+  learning rate: 0.1<br>
+	BATCH_SIZE: 83
+
+* When the accuracy for training data is 95% or greater<br>
+  learning rate: 0.03<br>
+	BATCH_SIZE: 83*9<br>
+
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ?
-* test set accuracy of ?
+* training set accuracy of 100%
+* validation set accuracy of 96.1%
+* test set accuracy of 94.9%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
+* 最初に、LeNetの出力層のノード数を代えてトレーニングを行いました。
+* その時、検証用データ、学習用データに対する正解率がとても低かった。なので、アンダーフィッティングしていると考え、3x3の畳み込み層と5x5の畳み込み層をもったインセプションモジュールとバッチノーマライザーしょんを用いました。
+* インセプションモジュールとBNを用いると、検証用データに対しての93%の正解率を達成しました。
+* その後、GoogLeNetに基づいてGlobal Average Poolingを使いました。これで学習を行ったところ96%を達成することができました。
+* 最初は、オプティマイザーにAdaGradを使っていましたが一定のところで正解率が下がることがあったため、GradientDecentに変更しました。
 * What were some problems with the initial architecture?
 * How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
 * Which parameters were tuned? How were they adjusted and why?
