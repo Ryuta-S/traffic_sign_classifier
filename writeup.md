@@ -77,7 +77,7 @@ Here is an example of an original image and an augmented image:
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-My model introduced the Inception Module. In addition, my model includes global average pooling after the Inception Module. 
+My model introduced the Inception Module. In addition, my model includes global average pooling after the Inception Module.
 And I put 3 fully connected layers. Also, batch normalization is included in the middle.
 My final model consisted of the following layers:
 
@@ -134,21 +134,23 @@ My final model results were:
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
-* 最初に、LeNetの出力層のノード数を代えてトレーニングを行いました。
-* その時、検証用データ、学習用データに対する正解率がとても低かった。なので、アンダーフィッティングしていると考え、3x3の畳み込み層と5x5の畳み込み層をもったインセプションモジュールを用いました。
-* インセプションモジュールとBNを用いると、検証用データに対しての93%の正解率を達成しました。
-* その後、GoogLeNetに基づいてGlobal Average Poolingを使いました。これで学習を行ったところ96%を達成することができました。
-* 最初は、オプティマイザーにAdaGradを使っていましたが一定のところで正解率が下がることがあったため、GradientDecentに変更しました。
-* 最後の3つの全結合層にはドロップアウトを入れて、アンサンブル学習を行いました。
-* インセプションモジュールの中にバッチノーマライズを用いて、内部共変量シフトをなくすことを行いました。
-* インセプションモジュールによる特徴量の取り方の違いをいかに示します。
+* First, I used the LeNet architecture.
+* At that time, the accuracy for validation data and training data was very low. So, I thought that model is underfitting. I used an inception module with a 3x3 convolution layer and a 5x5 convolution layer.
+* I used batch normalization.
+* Using the Inception Module and BN, I achieved 93% accuracy for validation data.
+* After that, I used Global Average Pooling based on GoogLeNet. By doing this, I achieved 96% accuracy.
+* I used AdaGrad for the optmizer, butt I changed it to GradientDescent because the accuracy was reduced in certain point when I used AdaGrad.
+* I inserted dropout layer in the fully connected layers and performed ensemble learning.
 
-<img src='./writeup_image/visualization_inception1_l1.jpg' width=200 />
-<img src='./writeup_image/visualization_inception2_l1.jpg' width=200/>
-<img src='./writeup_image/visualization_inception1_l2.jpg' width=200/>
-<img src='./writeup_image/visualization_inception2_l2.jpg' width=200/>
-<img src='./writeup_image/visualization_inception1_l3.jpg' width=200/>
-<img src='./writeup_image/visualization_inception2_l3.jpg' width=200/>
+
+##### The difference in feature extraction by the Inception Module is shown below.
+
+<img src='./writeup_image/visualization_inception1_l1.jpg'  />
+<img src='./writeup_image/visualization_inception2_l1.jpg' />
+<img src='./writeup_image/visualization_inception1_l2.jpg' />
+<img src='./writeup_image/visualization_inception2_l2.jpg' />
+<img src='./writeup_image/visualization_inception1_l3.jpg' />
+<img src='./writeup_image/visualization_inception2_l3.jpg' />
 
 ### Test a Model on New Images
 
@@ -156,8 +158,12 @@ If an iterative approach was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6]
-![alt text][image7] ![alt text][image8]
+<img src='./test_images/Ahead only.jpg' width=200 height=200 />
+<img src='./test_images/Keep right.jpg' width=200 height=200 />
+<img src='./test_images/No entry.jpg' width=200 height=200 /><br><br>
+<img src='./test_images/Priority road.jpg' width=200 height=200 />
+<img src='./test_images/Right-of-way at the next intersection.jpg' width=200 height=200 />
+<img src='./test_images/Roundabout mandatory.jpg' width=200 height=200 />
 
 The first image might be difficult to classify because ...
 
