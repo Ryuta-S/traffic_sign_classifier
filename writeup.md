@@ -34,7 +34,7 @@ The goals / steps of this project are the following:
 
 #### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
 
-You're reading it! and here is a link to my [project code](https://github.com/ryutaShitomi/traffic_sign_classifier-Project/Traffic_Sign_Classifier.ipynb)
+You're reading it! and here is a link to my [project code](https://github.com/ryutaShitomi/traffic_sign_classifier/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ### Data Set Summary & Exploration
 
@@ -60,71 +60,97 @@ Here is a diagram visualizing the dataset. This is a histogram. It shows how man
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
 As a first step, I decided to convert the images to grayscale because ...
-画像を見てみると暗くて、標識が判別できない画像が多くあったため、輝度のヒストグラムを一定するように変換しました。これは、train, valid, testデータセットそれぞれ全部に行いました。これが私が行った正規化です。
-以下に、オリジナルの画像と変換後の画像を示します。
+As a first step, I decided to convert the images to equalize the histogram of lightness because there are many dark images.
+I did this for every train, validation, test dataset. This is the normalization I did.
+The following shows the original image and the converted image.
 
-![alt text][image2]
+<img src='./writeup_image/equalizeLightness.jpg' />
 
 I decided to generate additional data because
-私はデータを拡張することを決めました。理由としては、上記で述べたようにクラスごとに画像の枚数にばらつきがあるからです。このばらつきをなくすため、クラスの中にデータ数が900枚以下の場合に、そのクラスの画像の枚数を増やすことを行いました。増やし方としては、回転と拡大と縮小を行ってデータを増やしました。
-
+I decided to generate additional data because there are variations in the number of images for each class. In order to eliminate this variation, I increased the number of images of that class when the number of data is less than 900 in class.
+I increased the data by rotating, expanding and shrinking.
 
 Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+<img src='./writeup_image/data_augmentation.jpg' />
 
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-私のモデルは、インセプションモジュールを導入しました。また、インセプションの後にグローバルアベレージプーリングを行います。そして、全結合層を3層入れました。また、途中にはバッチノーマライゼーションも入れました。
-TensorFlowの計算グラフを以下に示します。
+My model introduced the Inception Module. In addition, my model includes global average pooling after the Inception Module.
+And I put 3 fully connected layers. Also, batch normalization is included in the middle.
 My final model consisted of the following layers:
 
-| 分岐1 								| Description										| Main Layer  			| Description							 | 分岐2 					| Description        |
-|:---------------------:|:-----------------------------:|:-----------------:|:------------------------:|:--------------:|:-----------------:| 
-| Layer         		|     Description	        					|
-|:---------------------:|:---------------------------------------------:|
-| Input         		    | 32x32x3 RGB image                							|
-| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x20 	|
-| RELU                  | activation                                    |
-| Batch Normalization   |                                               |
-| Convolution 3x3       | 1x1 stride, valid padding, outputs 30x30x20   |
-| RELU                  | activation                                    |
-| Batch Normalization   |                                               |
-| Convolution 3x3       |
-| Merge				        	|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
+| branch1          | Description              | Main Layer       | Description              | breanch2        | Description            |
+|:----------------:|:------------------------:|:----------------:|:------------------------:|:---------------:|:----------------------:|
+|                  |                          | Input            | 32x32x3 RGB image				|                 |                        |
+| layer1: Inception1(Conv5x5)| 1x1 stride, valid, out:28x28x10|  |                          | layer1: Inception2_1(Conv3x3)| 1x1 stride, valid, out:30x30x10 |
+| layer1: RELU     | activation               |                  |                  				| layer1: RELU    | activation             |
+| layer1: BN       | Batch Normalization      |                  |                  				| layer1: Inception2_2(Conv3x3)| 1x1 stride, valid, out:30x30x20 |
+|         ↓        |             ↓            |                  |                  				| layer1: RELU    | activation             |
+|         ↓        |             ↓            |                  |                  				| layer1: BN      | Batch Normalization    |
+|                  |                          | layer1: Merge    | Merge inception1 and inception2, out: 28x28x30 |             |      |
+| layer2: Inception1(Conv5x5)| 2x2 stride, same, out:14x14x50|   |                  				| layer2: Inception2(Conv3x3)| 2x2 stride, same, out:14x14x50  |
+| layer2: RELU     | activation               |                  |                          | layer2: RELU    | activation             |
+| layer2: BN       | Batch Normalization      |                  |                          | layer2: BN      | Batch Normalization    |
+|                  |                          | layer2: Merge    | Merge inception1 and inception2, out: 14x14x100|             |      |
+| layer3: Inception1(Conv5x5)| 1x1 stride, valid, out:10x10x120| |                          | layer3: Inception2_1(Conv3x3)| 1x1 stride, valid, out:12x12x100|
+| layer3: RELU     | activation               |                  |                          | layer3: RELU    | activation             |
+| layer3: BN       | Batch Normalization      |                  |                          | layer3: Inception2_2(Conv3x3)| 1x1 stride, valid, out:12x12x120|
+|         ↓        |             ↓            |                  |                          | layer3: RELU    | activation             |
+|         ↓        |             ↓            |                  |                          | layer3: BN      | Batch Normalization    |
+|                  |                          | layer3: Merge    | Merge inception1 and inception2, out: 12x12x240|            |       |
+|                  |                          | GAP              | Global Average Pooling out:240 |           |                        |
+|                  |                          | layer4: Fully Connected  | input: 240, output: 150|           |                        |
+|                  |                          | dropout          | dropout keep_prob: 0.75 or 0.5 |           |                        |
+|                  |                          | layer5: Fully Connected  | input: 150, output: 100|           |                        |
+|                  |                          | dropout          | dropout keep_prob: 0.75 or 0.5 |           |                        |
+|                  |                          | output           | input: 100, output: 43         |           |                        |
+|                  |                          | Softmax          | input: 43, output: 43          |           |                        |
 
+The graph created with the tensorboard is shown [here](https://github.com/ryutaShitomi/traffic_sign_classifier/blob/master/writeup_image/model.png).
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the my model, I did a stochastic gradient descent method. Since the number of augmentation train data is 53037, I chose the batch size to be the common multiple.And, epochs is 20.
+The hyper parameter values are shown below.
+
+* When the accuracy for training data is 94% or less<br>
+  learning rate: 0.1<br>
+	BATCH_SIZE: 83
+
+* When the accuracy for training data is 95% or greater<br>
+  learning rate: 0.03<br>
+	BATCH_SIZE: 83*9<br>
+
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ?
-* test set accuracy of ?
+* training set accuracy of 100%
+* validation set accuracy of 96.1%
+* test set accuracy of 94.9%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+* First, I used the LeNet architecture.
+* At that time, the accuracy for validation data and training data was very low. So, I thought that model is underfitting. I used an inception module with a 3x3 convolution layer and a 5x5 convolution layer.
+* I used batch normalization.
+* Using the Inception Module and BN, I achieved 93% accuracy for validation data.
+* After that, I used Global Average Pooling based on GoogLeNet. By doing this, I achieved 96% accuracy.
+* I used AdaGrad for the optmizer, butt I changed it to GradientDescent because the accuracy was reduced in certain point when I used AdaGrad.
+* I inserted dropout layer in the fully connected layers and performed ensemble learning.
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
 
+##### The difference in feature extraction by the Inception Module is shown below.
+
+<img src='./writeup_image/visualization_inception1_l1.jpg'  />
+<img src='./writeup_image/visualization_inception2_l1.jpg' />
+<img src='./writeup_image/visualization_inception1_l2.jpg' />
+<img src='./writeup_image/visualization_inception2_l2.jpg' />
+<img src='./writeup_image/visualization_inception1_l3.jpg' />
+<img src='./writeup_image/visualization_inception2_l3.jpg' />
 
 ### Test a Model on New Images
 
@@ -132,8 +158,12 @@ If a well known architecture was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6]
-![alt text][image7] ![alt text][image8]
+<img src='./test_images/Ahead only.jpg' width=200 height=200 />
+<img src='./test_images/Keep right.jpg' width=200 height=200 />
+<img src='./test_images/No entry.jpg' width=200 height=200 /><br><br>
+<img src='./test_images/Priority road.jpg' width=200 height=200 />
+<img src='./test_images/Right-of-way at the next intersection.jpg' width=200 height=200 />
+<img src='./test_images/Roundabout mandatory.jpg' width=200 height=200 />
 
 The first image might be difficult to classify because ...
 
