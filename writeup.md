@@ -129,8 +129,8 @@ The hyper parameter values are shown below.
 
 My final model results were:
 * training set accuracy of 100%
-* validation set accuracy of 96.1%
-* test set accuracy of 94.9%
+* validation set accuracy of 96.9%
+* test set accuracy of 95.7%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -144,11 +144,18 @@ If an iterative approach was chosen:
 
 
 ##### The difference in feature extraction by the Inception Module is shown below.
+###### Example image
+<img src='./writeup_image/visualization_sample1.jpg' />
 
+###### <u>layer1</u>
 <img src='./writeup_image/visualization_inception1_l1.jpg'  />
 <img src='./writeup_image/visualization_inception2_l1.jpg' />
+
+###### <u>layer2</u>
 <img src='./writeup_image/visualization_inception1_l2.jpg' />
 <img src='./writeup_image/visualization_inception2_l2.jpg' />
+
+###### <u>layer3</u>
 <img src='./writeup_image/visualization_inception1_l3.jpg' />
 <img src='./writeup_image/visualization_inception2_l3.jpg' />
 
@@ -158,14 +165,14 @@ If an iterative approach was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-<img src='./test_images/Ahead only.jpg' width=200 height=200 />
-<img src='./test_images/Keep right.jpg' width=200 height=200 />
-<img src='./test_images/No entry.jpg' width=200 height=200 /><br><br>
-<img src='./test_images/Priority road.jpg' width=200 height=200 />
-<img src='./test_images/Right-of-way at the next intersection.jpg' width=200 height=200 />
-<img src='./test_images/Roundabout mandatory.jpg' width=200 height=200 />
+<img src='./test_images/Ahead only.jpg' width=150 height=150 />
+<img src='./test_images/Keep right.jpg' width=150 height=150 />
+<img src='./test_images/No entry.jpg' width=150 height=150 /><br><br>
+<img src='./test_images/Priority road.jpg' width=150 height=150 />
+<img src='./test_images/Right-of-way at the next intersection.jpg' width=150 height=150 />
+<img src='./test_images/Roundabout mandatory.jpg' width=150 height=150 />
 
-The first image might be difficult to classify because ...
+The last image might be difficult to classify because, when I look at the misclassified in the validation data, there are many mistakes in this sign.
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -173,31 +180,26 @@ Here are the results of the prediction:
 
 | Image			        |     Prediction	        					|
 |:---------------------:|:---------------------------------------------:|
-| Stop Sign      		| Stop sign   									|
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Ahead only      		| Ahead only    									|
+| Keep right     			| Keep right 										|
+| No entry 					| No entry											|
+| Priority road	      		| Priority Road					 				|
+| Right-of-way at the next intersection		| Right-of-way at the next intersection							|
+| Roundabout mandatory                 | Roundabout mandatory  |
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 5 of the 5 traffic signs, which gives an accuracy of 100%.
+Compare with the accuracy on the test set, I got a good result. Also, looking at the misidentified image of the validation data, I found that there are many misidentified to the influence of color such as sunshine. So it may be improved it to grayscale and then creating model.
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+The code for making predictions on my final model is located in the 28th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+The following shows each image and Top 5 soft max probability. You can see that good predictions are made for all images.
 
-| Probability         	|     Prediction	        					|
-|:---------------------:|:---------------------------------------------:|
-| .60         			| Stop sign   									|
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
-
-
-For the second image ...
-
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+<img src='./writeup_image/ahead_only.PNG'    width='550' height='240'/>
+<img src='./writeup_image/keep_right.png'    width='550' height='240'/>
+<img src='./writeup_image/no_entry.png'      width='550' height='240'/>
+<img src='./writeup_image/priority_road.png' width='550' height='240'/>
+<img src='./writeup_image/right_of_way.png'  width='550' height='240'/>
+<img src='./writeup_image/about.png'         width='550' height='240'/>
