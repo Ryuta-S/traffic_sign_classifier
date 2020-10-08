@@ -139,12 +139,12 @@ If an iterative approach was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-<img src='./test_images/Ahead only.jpg' width=150 height=150 />
-<img src='./test_images/Keep right.jpg' width=150 height=150 />
-<img src='./test_images/No entry.jpg' width=150 height=150 /><br><br>
-<img src='./test_images/Priority road.jpg' width=150 height=150 />
-<img src='./test_images/Right-of-way at the next intersection.jpg' width=150 height=150 />
-<img src='./test_images/Roundabout mandatory.jpg' width=150 height=150 />
+<img src='./test_images/Ahead only.JPG' width=150 height=150 />
+<img src='./test_images/Keep right.JPG' width=150 height=150 />
+<img src='./test_images/No entry.JPG' width=150 height=150 /><br><br>
+<img src='./test_images/Priority road.JPG' width=150 height=150 />
+<img src='./test_images/Right-of-way at the next intersection.JPG' width=150 height=150 />
+<img src='./test_images/Roundabout mandatory.JPG' width=150 height=150 />
 
 The last image might be difficult to classify because, when I look at the misclassified in the validation data, there are many mistakes in this sign.
 
